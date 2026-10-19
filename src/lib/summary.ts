@@ -55,19 +55,16 @@ export function dailyAggregates(d: AllData, start: string, end: string): DailyAg
   })
 }
 
-export function clinicianSummary(d: AllData, start: string, end: string) {
+function periodStats(d: AllData, start: string, end: string) {
   const inRange = (k: string) => k >= start && k <= end
   const bms = d.bowelMovements.filter((b) => inRange(dateKeyOf(b.timestamp)))
   const checkIns = d.checkIns.filter((c) => inRange(c.date))
   const days = dateRange(start, end).length
   return {
-    start,
-    end,
     days,
     stool: stoolStats(bms, days),
     nocturnalCount: bms.filter((b) => b.wokeMeUp).length,
     bloodCount: bms.filter((b) => b.blood).length,
-    checkInCount: checkIns.length,
     painMean: mean(checkIns.map((c) => c.painMax)),
     bloatingMean: mean(checkIns.map((c) => c.bloating)),
     flareDays: checkIns.filter((c) => c.flareDay).length,
@@ -75,14 +72,13 @@ export function clinicianSummary(d: AllData, start: string, end: string) {
     interventions: [...d.interventions].sort((a, b) => (a.startDate ?? a.createdAt).localeCompare(b.startDate ?? b.createdAt)),
     comparisons: d.interventions.map((i) => compareTrial(i, d)).filter((c) => !!c),
     labs: [...d.labs].sort((a, b) => a.test.localeCompare(b.test) || b.date.localeCompare(a.date)),
-    alerts: [...d.alerts].sort((a, b) => b.triggeredAt.localeCompare(a.triggeredAt)),
     dosesPerIntervention: d.interventions.map((i) => ({ i, count: d.doses.filter((x) => x.interventionId === i.id && inRange(dateKeyOf(x.timestamp))).length })),
   }
 }
 
 /** Compact Markdown for pasting into an AI assistant. Free-text notes only when includeNotes is set. */
 export function aiSummaryMarkdown(d: AllData, start: string, end: string, includeNotes: boolean): string {
-  const s = clinicianSummary(d, start, end)
+  const s = periodStats(d, start, end)
   const L: string[] = []
   L.push(`# Gut tracker summary ${start} → ${end} (${s.days} days)`)
   L.push('')

@@ -35,7 +35,7 @@ function Row({ label, sub, onClick }: { label: string; sub?: string; onClick: ()
   )
 }
 
-export function MoreScreen({ onOpenSummary }: { onOpenSummary: (start: string, end: string) => void }) {
+export function MoreScreen() {
   const { open } = useSheet()
   const counts = useLiveQuery(async () => ({
     interventions: await db.interventions.count(),
@@ -50,7 +50,7 @@ export function MoreScreen({ onOpenSummary }: { onOpenSummary: (start: string, e
           <Row label="Interventions & trials" sub={`${counts?.interventions ?? 0} defined`} onClick={() => open(<InterventionsSheet />)} />
           <Row label="IBS-SSS history" sub={`${counts?.sss ?? 0} weekly scores`} onClick={() => open(<IbsSssHistory />)} />
           <Row label="Alerts" sub={`${counts?.alerts ?? 0} total`} onClick={() => open(<AlertsSheet />)} />
-          <Row label="Export, import & reports" sub="Backup, CSV, clinician summary, AI summary" onClick={() => open(<DataSheet onOpenSummary={onOpenSummary} />)} />
+          <Row label="Export & import" sub="Backup, CSV, AI summary" onClick={() => open(<DataSheet />)} />
           <Row label="Settings" sub="Reminders, tags, units, delete data" onClick={() => open(<SettingsSheet />)} />
         </ul>
       </Card>
@@ -229,7 +229,7 @@ function AlertsSheet() {
 
 // ---------- Data ----------
 
-function DataSheet({ onOpenSummary }: { onOpenSummary: (start: string, end: string) => void }) {
+function DataSheet() {
   const data = useAllData()
   const settings = useSettings()
   const toast = useToast()
@@ -248,7 +248,7 @@ function DataSheet({ onOpenSummary }: { onOpenSummary: (start: string, end: stri
   }
   const start = data ? rangeStart(range, data) : todayKey()
   return (
-    <SheetLayout title="Export, import & reports">
+    <SheetLayout title="Export & import">
       <Card title="Backup">
         <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
           Your data lives only on this phone. Export regularly and keep the file somewhere safe (e.g. iCloud Drive, Google Drive, email to yourself).
@@ -281,10 +281,11 @@ function DataSheet({ onOpenSummary }: { onOpenSummary: (start: string, end: stri
           }}
         />
       </Card>
-      <Card title="Reports">
+      <Card title="AI summary">
+        <p className="mb-2 text-sm text-slate-600 dark:text-slate-400">Copies a compact Markdown summary (daily aggregates, IBS-SSS, interventions, labs) to paste into an AI assistant.</p>
         <p className="mb-2 text-sm font-medium">Period</p>
         <Segmented
-          label="Report period"
+          label="Summary period"
           value={range}
           onChange={setRange}
           options={[
@@ -295,7 +296,6 @@ function DataSheet({ onOpenSummary }: { onOpenSummary: (start: string, end: stri
           ]}
         />
         <div className="mt-3 grid gap-2">
-          <Button onClick={() => onOpenSummary(start, todayKey())}>Clinician summary (print / PDF)</Button>
           <Toggle label="Include free-text notes in AI summary" checked={settings.aiSummaryIncludeNotes} onChange={(v) => updateSettings({ aiSummaryIncludeNotes: v })} />
           <Button
             variant="secondary"

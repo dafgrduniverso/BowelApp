@@ -46,16 +46,6 @@ input[type='checkbox'] {
   @apply rounded-lg! border-slate-300! bg-white! text-slate-900! dark:border-slate-700! dark:bg-slate-900! dark:text-slate-100!;
 }
 
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  body {
-    background: white;
-    color: black;
-  }
-}
-
 /* Chart palette (validated categorical slots; diverging blue↔red for Bristol) */
 :root {
   --series-1: #2a78d6;

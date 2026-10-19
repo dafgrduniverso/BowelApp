@@ -1,9 +1,8 @@
-# Deploys to GitHub Pages. Requires: repo Settings → Pages → Source = "GitHub Actions".
-# Note: Pages on a private repo needs a paid GitHub plan; otherwise use Netlify/Vercel (see README).
+# Deploys the app to GitHub Pages on every push to the repository's default branch.
+# One-time setup: repo Settings → Pages → Build and deployment → Source = "GitHub Actions".
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,6 +13,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

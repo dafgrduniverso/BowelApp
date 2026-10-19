@@ -8,7 +8,6 @@ import { TodayScreen } from './screens/TodayScreen'
 // Chart-heavy screens load on demand so the Log screen starts fast.
 const TrendsScreen = lazy(() => import('./screens/TrendsScreen').then((m) => ({ default: m.TrendsScreen })))
 const LabsScreen = lazy(() => import('./screens/LabsScreen').then((m) => ({ default: m.LabsScreen })))
-const ClinicianSummary = lazy(() => import('./screens/ClinicianSummary').then((m) => ({ default: m.ClinicianSummary })))
 
 type Tab = 'log' | 'today' | 'trends' | 'labs' | 'more'
 
@@ -28,16 +27,8 @@ const TITLES: Record<Tab, string> = { log: 'Log', today: 'Timeline', trends: 'Tr
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('log')
-  const [summary, setSummary] = useState<{ start: string; end: string } | null>(null)
 
   useEffect(() => window.scrollTo(0, 0), [tab])
-
-  if (summary)
-    return (
-      <Suspense fallback={null}>
-        <ClinicianSummary {...summary} onClose={() => setSummary(null)} />
-      </Suspense>
-    )
 
   return (
     <ToastProvider>
@@ -55,7 +46,7 @@ export default function App() {
               {tab === 'trends' && <TrendsScreen />}
               {tab === 'labs' && <LabsScreen />}
             </Suspense>
-            {tab === 'more' && <MoreScreen onOpenSummary={(start, end) => setSummary({ start, end })} />}
+            {tab === 'more' && <MoreScreen />}
           </main>
           <nav className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95" aria-label="Main">
             <ul className="mx-auto flex max-w-xl">

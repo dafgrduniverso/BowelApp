@@ -11,7 +11,7 @@ It is a tracking tool, not a diagnostic tool.
 - **Today**: a timeline of each day's entries. Tap an entry to edit or delete it; ‹ › moves between days.
 - **Trends**: Bristol stacked bars, stool stats and a Rome IV-style pattern indicator, daily scores with flare days marked, IBS-SSS over time with severity bands and trial spans, trial baseline-vs-trial comparison, exploratory trigger association, on-demand doses vs flare days, and weight.
 - **Labs**: preset and custom tests, per-test charts with the reference band shaded, and a "Not yet done" list.
-- **More**: interventions and trials (with the single-variable warning), IBS-SSS history, alerts, export/import, CSV zip, a printable clinician summary, "Copy summary for AI analysis", settings, demo data and delete-all.
+- **More**: interventions and trials (with the single-variable warning), IBS-SSS history, alerts, export/import, CSV zip, "Copy summary for AI analysis", settings, demo data and delete-all.
 - **Red-flag rules** are evaluated after every save. Their thresholds live in `src/lib/config.ts`.
 - **Reminders**: in-app banners, plus web notifications while the app is running (see the limitation below).
 
@@ -31,7 +31,7 @@ To get 60 days of realistic fake data for the charts, go to **More → Settings 
 The app has to be served over **HTTPS** for installing and offline use to work. Any static host will do:
 
 - **Netlify** or **Vercel** (free, and they work with private repos). Import the GitHub repo; `netlify.toml` / `vercel.json` already contain the build settings. Every push to the default branch redeploys.
-- **GitHub Pages**: set Settings → Pages → Source to "GitHub Actions". `.github/workflows/deploy-pages.yml` deploys on every push to `main`. A private repo needs a paid GitHub plan for Pages; otherwise make the repo public. Only code is in the repo, never your data.
+- **GitHub Pages** (what this repo uses): set Settings → Pages → Build and deployment → Source to **GitHub Actions**. `.github/workflows/deploy-pages.yml` then deploys on every push to the default branch, to `https://<user>.github.io/<repo>/`. The repo must be public on a free plan. Only code is in the repo, never your data.
 
 ## Single-file version (laptop, no hosting)
 
