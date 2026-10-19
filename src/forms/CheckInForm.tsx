@@ -34,10 +34,13 @@ export function CheckInForm({ date: initialDate = todayKey() }: { date?: string 
       .where('date')
       .equals(date)
       .first()
-      .then((c) => {
-        setExisting(c)
-        setForm(c ? { ...c } : blank(date))
-      })
+      .then(
+        (c) => {
+          setExisting(c)
+          setForm(c ? { ...c } : blank(date))
+        },
+        () => setForm(blank(date)),
+      )
   }, [date])
 
   if (!form) return null

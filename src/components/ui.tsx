@@ -206,25 +206,40 @@ export const useSheet = () => useContext(SheetCtx)
  */
 export function SheetProvider({ children }: { children: ReactNode }) {
   const [stack, setStack] = useState<ReactNode[]>([])
-  const depth = useRef(0)
+  const depth = useRef(0) // sheets that have a history entry
+  const stackLen = useRef(0)
   useEffect(() => {
     const onPop = () => {
       const target = typeof history.state?.sheetDepth === 'number' ? history.state.sheetDepth : 0
-      depth.current = Math.min(depth.current, target)
-      setStack((s) => s.slice(0, depth.current))
+      if (target >= depth.current) return // our own close() already handled it
+      const n = depth.current - target
+      depth.current = target
+      stackLen.current = Math.max(0, stackLen.current - n)
+      setStack((s) => s.slice(0, Math.max(0, s.length - n)))
     }
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [])
   const api: SheetApi = {
     open: (n) => {
-      depth.current += 1
-      history.pushState({ sheetDepth: depth.current }, '')
+      try {
+        history.pushState({ sheetDepth: depth.current + 1 }, '')
+        depth.current += 1
+      } catch {
+        // History unavailable (sandboxed viewer): sheets still work, just not with the back button.
+      }
+      stackLen.current += 1
       setStack((s) => [...s, n])
     },
     close: (count = 1) => {
-      const n = Math.min(count, depth.current)
-      if (n > 0) history.go(-n)
+      const n = Math.min(count, stackLen.current)
+      const viaHistory = Math.min(n, depth.current)
+      stackLen.current -= n
+      if (viaHistory > 0) {
+        depth.current -= viaHistory
+        history.go(-viaHistory)
+      }
+      setStack((s) => s.slice(0, s.length - n))
     },
   }
   useEffect(() => {

@@ -2,11 +2,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App'
+import { ErrorBoundary, StorageGate } from './components/Guards'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ErrorBoundary>
+      <StorageGate>
+        <App />
+      </StorageGate>
+    </ErrorBoundary>
   </StrictMode>,
 )
 
