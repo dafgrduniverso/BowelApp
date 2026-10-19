@@ -33,6 +33,16 @@ The app has to be served over **HTTPS** for installing and offline use to work. 
 - **Netlify** or **Vercel** (free, and they work with private repos). Import the GitHub repo; `netlify.toml` / `vercel.json` already contain the build settings. Every push to the default branch redeploys.
 - **GitHub Pages**: set Settings → Pages → Source to "GitHub Actions". `.github/workflows/deploy-pages.yml` deploys on every push to `main`. A private repo needs a paid GitHub plan for Pages; otherwise make the repo public. Only code is in the repo, never your data.
 
+## Single-file version (laptop, no hosting)
+
+`npm run build:single` produces `dist-single/gut-tracker.html`, a single self-contained file (~880 kB) that runs when opened straight from disk in Chrome or Edge. It needs no server, no install and no network. CI also attaches it to every run as the `gut-tracker-html` artifact (Actions → latest run → Artifacts).
+
+- Data is saved in the browser's own storage (IndexedDB), so it stays with that browser profile, not with the file. To update, replace the file with a new one; the data stays.
+- In Chrome and Edge, every local HTML file shares the same storage. Any other local HTML page opened in that browser could read it.
+- There are no notifications. Reminders show as banners.
+- If the browser is set to clear site data on exit, the data is lost when the browser closes. Test this before relying on it, and export regularly.
+- It does not sync with the phone. Use Export on one device and Import → Merge on the other.
+
 ## Install on the phone
 
 - **iPhone (Safari)**: open the URL, tap **Share → Add to Home Screen**, then open it from the home screen. Notifications need iOS 16.4+ and an installed app.

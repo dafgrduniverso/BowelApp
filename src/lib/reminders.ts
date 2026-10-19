@@ -23,7 +23,11 @@ export function checkInDue(hasTodayCheckIn: boolean, s: Settings, now = new Date
   return now.getHours() * 60 + now.getMinutes() >= minutesOfDay(s.checkInReminder)
 }
 
-export const notificationsSupported = () => typeof window !== 'undefined' && 'Notification' in window && 'serviceWorker' in navigator
+/** True in the self-contained HTML build that is opened from disk. */
+export const IS_SINGLE_FILE = import.meta.env.MODE === 'single'
+
+export const notificationsSupported = () =>
+  !IS_SINGLE_FILE && typeof window !== 'undefined' && 'Notification' in window && 'serviceWorker' in navigator
 
 export const isStandalone = () =>
   typeof window !== 'undefined' &&

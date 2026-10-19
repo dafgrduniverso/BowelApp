@@ -12,7 +12,7 @@ import { copyText, saveFile } from '../lib/download'
 import { buildCsvZip, importData, parseExport, summarize, type ExportFile } from '../lib/exportImport'
 import { useAllData, useSettings } from '../lib/hooks'
 import { ibsSssBand } from '../lib/ibsSss'
-import { notificationsSupported } from '../lib/reminders'
+import { IS_SINGLE_FILE, notificationsSupported } from '../lib/reminders'
 import { aiSummaryMarkdown } from '../lib/summary'
 import { WEEKDAYS, addDays, daysBetween, formatDate, formatDateTime, nowIso, todayKey, weekStart } from '../lib/time'
 import { isTrialActive } from '../lib/trials'
@@ -398,7 +398,11 @@ function SettingsSheet() {
         </Field>
         <div className="mt-2 rounded-xl bg-slate-100 p-3 text-sm dark:bg-slate-800">
           {perm === 'unsupported' ? (
-            <p>Notifications aren't available here. On iPhone, add the app to your Home Screen first (iOS 16.4+). Reminders show as a banner when you open the app.</p>
+            <p>
+              {IS_SINGLE_FILE
+                ? 'The single-file version can’t send notifications. Reminders show as a banner when you open it.'
+                : 'Notifications aren’t available here. On iPhone, add the app to your Home Screen first (iOS 16.4+). Reminders show as a banner when you open the app.'}
+            </p>
           ) : perm === 'granted' ? (
             <p>Notifications allowed. They fire while the app is open or in the background; otherwise you'll see a banner on next open.</p>
           ) : perm === 'denied' ? (

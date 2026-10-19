@@ -7,7 +7,7 @@ import { EndTrialForm } from '../forms/InterventionForm'
 import { IbsSssForm } from '../forms/IbsSssForm'
 import { BACKUP_REMINDER_DAYS } from '../lib/config'
 import { useSettings } from '../lib/hooks'
-import { checkInDue, ibsSssDue, isIos, isStandalone, scheduleToday, showNotification } from '../lib/reminders'
+import { IS_SINGLE_FILE, checkInDue, ibsSssDue, isIos, isStandalone, scheduleToday, showNotification } from '../lib/reminders'
 import { nowIso, todayKey } from '../lib/time'
 import { buildExport } from '../lib/exportImport'
 import { saveFile } from '../lib/download'
@@ -196,7 +196,7 @@ export function InfoBanners() {
       </Banner>,
     )
 
-  if (!isStandalone() && !dismissed.install) {
+  if (!IS_SINGLE_FILE && !isStandalone() && !dismissed.install) {
     if (installEvt)
       banners.push(
         <Banner
