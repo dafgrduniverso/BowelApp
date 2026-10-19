@@ -130,6 +130,7 @@ export interface Settings {
   triggerTags: string[]
   weightUnit: 'kg' | 'lb'
   lastExportAt?: string
+  backupSnoozedAt?: string
   aiSummaryIncludeNotes: boolean
 }
 

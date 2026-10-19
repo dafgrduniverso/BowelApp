@@ -138,7 +138,7 @@ export function toCsv(rows: Record<string, unknown>[]): string {
   return [cols.join(','), ...rows.map((r) => cols.map((c) => csvCell(r[c])).join(','))].join('\r\n') + '\r\n'
 }
 
-export async function buildCsvZip(database: GutDb = db): Promise<Uint8Array> {
+export async function buildCsvZip(database: GutDb = db): Promise<Uint8Array<ArrayBuffer>> {
   const all = await readAll(database)
   const files: Record<string, Uint8Array> = {}
   for (const t of DATA_TABLES) {
@@ -147,5 +147,5 @@ export async function buildCsvZip(database: GutDb = db): Promise<Uint8Array> {
     )
     files[`${t}.csv`] = strToU8('﻿' + toCsv(rows))
   }
-  return zipSync(files)
+  return new Uint8Array(zipSync(files))
 }

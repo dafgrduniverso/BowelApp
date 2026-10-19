@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-accent: #0f766e;
+  --color-accent-strong: #115e59;
+}
+
+:root {
+  color-scheme: light dark;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overscroll-behavior-y: none;
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+input[type='range'] {
+  accent-color: var(--color-accent);
+  height: 2.75rem;
+}
+input[type='checkbox'] {
+  accent-color: var(--color-accent);
+}
+
+/* Recharts text follows the theme */
+.recharts-text,
+.recharts-cartesian-axis-tick-value {
+  fill: currentColor;
+}
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  @apply rounded-lg! border-slate-300! bg-white! text-slate-900! dark:border-slate-700! dark:bg-slate-900! dark:text-slate-100!;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+/* Chart palette (validated categorical slots; diverging blue↔red for Bristol) */
+:root {
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --grid: #e1e0d9;
+  --axis: #898781;
+  --band-remission: #0ca30c1f;
+  --band-mild: #fab2191f;
+  --band-moderate: #ec835a26;
+  --band-severe: #d03b3b26;
+  --b1: #184f95;
+  --b2: #5598e7;
+  --b3: #a8a7a0;
+  --b4: #c3c2b7;
+  --b5: #898781;
+  --b6: #ec835a;
+  --b7: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --grid: #1e293b;
+    --axis: #898781;
+    --b1: #3987e5;
+    --b2: #86b6ef;
+    --b3: #6b6a64;
+    --b4: #8d8c85;
+    --b5: #55544f;
+    --b6: #ec835a;
+    --b7: #e66767;
+  }
+}

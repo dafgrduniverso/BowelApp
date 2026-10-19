@@ -1,3 +1,5 @@
+import type { LabResult } from '../db/types'
+
 export interface LabPreset {
   test: string
   unit?: string
@@ -37,4 +39,19 @@ export const numericValue = (v: number | string): number | undefined => {
   if (typeof v === 'number') return Number.isFinite(v) ? v : undefined
   const n = Number(String(v).replace(',', '.').replace(/^[<>≤≥]\s*/, ''))
   return Number.isFinite(n) && String(v).trim() !== '' ? n : undefined
+}
+
+export function labFlag(l: LabResult): 'high' | 'low' | undefined {
+  const v = numericValue(l.value)
+  if (v === undefined) return undefined
+  if (l.refHigh !== undefined && v > l.refHigh) return 'high'
+  if (l.refLow !== undefined && v < l.refLow) return 'low'
+  return undefined
+}
+
+export function refRangeText(l: Pick<LabResult, 'refLow' | 'refHigh'>): string {
+  if (l.refLow !== undefined && l.refHigh !== undefined) return `${l.refLow}–${l.refHigh}`
+  if (l.refHigh !== undefined) return `≤ ${l.refHigh}`
+  if (l.refLow !== undefined) return `≥ ${l.refLow}`
+  return ''
 }

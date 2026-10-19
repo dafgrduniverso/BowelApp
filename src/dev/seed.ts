@@ -82,9 +82,11 @@ export function generateSeed(days = 60, end = new Date()): Omit<AllData, 'alerts
       const base = flare ? 5.5 : 3.6 + severity * 0.8
       const bristol = Math.min(7, Math.max(1, Math.round(base + (r() - 0.5) * 3))) as Bristol
       const night = flare && k === 0 && r() < 0.3
+      const timestamp = at(key, night ? 3 : 7 + Math.floor((k / count) * 14), Math.floor(r() * 60))
+      if (new Date(timestamp) > end && key === endKey) continue
       data.bowelMovements.push({
         ...meta(),
-        timestamp: at(key, night ? 3 : 7 + Math.floor((k / count) * 14), Math.floor(r() * 60)),
+        timestamp,
         bristol,
         urgency: bristol >= 6 ? r() < 0.8 : r() < 0.15,
         blood: false,
