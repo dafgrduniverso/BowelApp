@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ibsSssBand, scoreIbsSss } from './ibsSss'
+import { ibsSssBand, scoreIbsSss, suggestIbsSss } from './ibsSss'
 
 const items = {
   hasPain: true,
@@ -43,5 +43,35 @@ describe('IBS-SSS bands', () => {
     [500, 'severe'],
   ])('%i → %s', (total, key) => {
     expect(ibsSssBand(total).key).toBe(key)
+  })
+})
+
+describe('IBS-SSS pre-fill from daily check-ins', () => {
+  const c = (date: string, painMax: number, bloating: number) => ({ date, painMax, bloating })
+  it('uses the 10 days ending on the form date', () => {
+    const checkIns = [
+      c('2026-10-09', 9, 9), // 11 days before → outside the window
+      c('2026-10-10', 4, 0),
+      c('2026-10-12', 6, 3),
+      c('2026-10-15', 0, 5),
+      c('2026-10-19', 2, 0),
+      c('2026-10-20', 9, 9), // after the form date → ignored
+    ]
+    expect(suggestIbsSss(checkIns, '2026-10-19')).toEqual({
+      checkIns: 4,
+      items: { hasPain: true, painDaysOutOf10: 3, painSeverity: 40, hasDistension: true, distensionSeverity: 40 },
+    })
+  })
+  it('reports no pain / no distension when none was logged', () => {
+    expect(suggestIbsSss([c('2026-10-19', 0, 0)], '2026-10-19')!.items).toEqual({
+      hasPain: false,
+      painDaysOutOf10: 0,
+      painSeverity: 0,
+      hasDistension: false,
+      distensionSeverity: 0,
+    })
+  })
+  it('returns nothing without check-ins in the window', () => {
+    expect(suggestIbsSss([c('2026-09-01', 5, 5)], '2026-10-19')).toBeUndefined()
   })
 })

@@ -296,7 +296,7 @@ function DataSheet() {
           ]}
         />
         <div className="mt-3 grid gap-2">
-          <Toggle label="Include free-text notes in AI summary" checked={settings.aiSummaryIncludeNotes} onChange={(v) => updateSettings({ aiSummaryIncludeNotes: v })} />
+          <Toggle label="Include notes and meal descriptions in AI summary" checked={settings.aiSummaryIncludeNotes} onChange={(v) => updateSettings({ aiSummaryIncludeNotes: v })} />
           <Button
             variant="secondary"
             disabled={!data}

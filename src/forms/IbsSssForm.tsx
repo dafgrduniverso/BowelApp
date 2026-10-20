@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useEffect, useState } from 'react'
 import { Button, Field, SheetLayout, Slider, Stepper, Toggle, inputCls, useSheet } from '../components/ui'
+import { db } from '../db/db'
 import { deleteRecord, saveRecord } from '../db/repo'
 import type { IbsSss } from '../db/types'
-import { ibsSssBand, scoreIbsSss, type IbsSssItems } from '../lib/ibsSss'
+import { IBS_SSS_RECALL_DAYS, ibsSssBand, scoreIbsSss, suggestIbsSss, type IbsSssItems } from '../lib/ibsSss'
 import { todayKey } from '../lib/time'
 
 export const BAND_COLORS: Record<string, string> = {
@@ -25,7 +27,18 @@ export function IbsSssForm({ initial }: { initial?: IbsSss }) {
   })
   const [saved, setSaved] = useState<number | null>(null)
   const { close } = useSheet()
-  const set = <K extends keyof IbsSssItems>(k: K, v: IbsSssItems[K]) => setItems((p) => ({ ...p, [k]: v }))
+  const set = <K extends keyof IbsSssItems>(k: K, v: IbsSssItems[K]) => {
+    setTouched(true)
+    setItems((p) => ({ ...p, [k]: v }))
+  }
+
+  // New scores start from the last 10 days of check-ins, until the user changes one of those items.
+  const [touched, setTouched] = useState(!!initial)
+  const checkIns = useLiveQuery(() => (initial ? [] : db.checkIns.toArray()), [initial])
+  const suggestion = initial || !checkIns ? undefined : suggestIbsSss(checkIns, date)
+  useEffect(() => {
+    if (!touched && suggestion) setItems((p) => ({ ...p, ...suggestion.items }))
+  }, [touched, JSON.stringify(suggestion)])
 
   if (saved !== null) {
     const band = ibsSssBand(saved)
@@ -62,7 +75,17 @@ export function IbsSssForm({ initial }: { initial?: IbsSss }) {
           : undefined
       }
     >
-      <p className="text-sm text-slate-600 dark:text-slate-400">Think about the past 10 days. Live score: {scoreIbsSss(items)} / 500</p>
+      <p className="text-sm text-slate-600 dark:text-slate-400">
+        Think about the past {IBS_SSS_RECALL_DAYS} days. It's fine that this overlaps last week's score. Live score: {scoreIbsSss(items)} / 500
+      </p>
+      {suggestion && (
+        <p className="rounded-xl bg-teal-50 p-3 text-sm text-teal-950 dark:bg-teal-950/60 dark:text-teal-50">
+          {touched ? 'Pain and bloating were' : 'Pain and bloating are'} pre-filled from your {suggestion.checkIns} check-in
+          {suggestion.checkIns === 1 ? '' : 's'} in the last {IBS_SSS_RECALL_DAYS} days
+          {suggestion.checkIns < IBS_SSS_RECALL_DAYS ? ' (days without a check-in count as no pain)' : ''}. Adjust anything that doesn't match how
+          it felt, then answer the last two questions.
+        </p>
+      )}
       <Field label="Date">
         <input type="date" className={inputCls} value={date} max={todayKey()} onChange={(e) => e.target.value && setDate(e.target.value)} />
       </Field>

@@ -131,11 +131,12 @@ export function aiSummaryMarkdown(d: AllData, start: string, end: string, includ
     const notes = [
       ...d.checkIns.filter((c) => c.notes && c.date >= start && c.date <= end).map((c) => `- ${c.date} check-in: ${c.notes}`),
       ...d.bowelMovements.filter((b) => b.notes && dateKeyOf(b.timestamp) >= start && dateKeyOf(b.timestamp) <= end).map((b) => `- ${dateKeyOf(b.timestamp)} BM: ${b.notes}`),
+      ...d.triggers.filter((t) => t.meal && dateKeyOf(t.timestamp) >= start && dateKeyOf(t.timestamp) <= end).map((t) => `- ${dateKeyOf(t.timestamp)} meal: ${t.meal}`),
       ...d.triggers.filter((t) => t.notes && dateKeyOf(t.timestamp) >= start && dateKeyOf(t.timestamp) <= end).map((t) => `- ${dateKeyOf(t.timestamp)} trigger: ${t.notes}`),
     ]
     if (notes.length) {
       L.push('')
-      L.push('## Notes')
+      L.push('## Notes and meals')
       L.push(...notes.sort())
     }
   }

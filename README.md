@@ -7,7 +7,9 @@ It is a tracking tool, not a diagnostic tool.
 
 ## Features
 
-- **Log** (home): inline Bristol picker with urgency/blood/woke-me-up/incomplete chips. Logging a Bristol 6 with urgency takes 3 taps: type → Urgency → Save. Buttons for the daily check-in, triggers, on-demand doses, eye episodes, weight and the weekly IBS-SSS.
+- **Log** (home): inline Bristol picker with urgency/blood/woke-me-up/incomplete chips. Logging a Bristol 6 with urgency takes 3 taps: type → Urgency → Save. Buttons for meals, the daily check-in, triggers, on-demand doses, eye episodes, weight and the weekly IBS-SSS.
+- **Meal recorder**: describe a meal by typing or with the keyboard's dictation mic. Foods and ingredients are recognised on the device (English and Portuguese, with plurals, negations like "sem leite" or "no cheese", and gluten-free, lactose-free, decaf and alcohol-free handled) and trigger tags are suggested, which you can change before saving. The word list is in `src/lib/foodTags.ts`.
+- **Weekly IBS-SSS** pre-fills pain days, pain severity and bloating severity from the last 10 days of check-ins (the questionnaire's standard 10-day recall); you adjust them and answer the other two items.
 - **Today**: a timeline of each day's entries. Tap an entry to edit or delete it; ‹ › moves between days.
 - **Trends**: Bristol stacked bars, stool stats and a Rome IV-style pattern indicator, daily scores with flare days marked, IBS-SSS over time with severity bands and trial spans, trial baseline-vs-trial comparison, exploratory trigger association, on-demand doses vs flare days, and weight.
 - **Labs**: preset and custom tests, per-test charts with the reference band shaded, and a "Not yet done" list.

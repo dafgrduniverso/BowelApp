@@ -9,6 +9,7 @@ import { DoseForm } from '../forms/DoseForm'
 import { EyeForm } from '../forms/EyeForm'
 import { IbsSssForm } from '../forms/IbsSssForm'
 import { LabForm } from '../forms/LabForm'
+import { MealForm } from '../forms/MealForm'
 import { TriggerForm } from '../forms/TriggerForm'
 import { LB_PER_KG, WeightForm } from '../forms/WeightForm'
 import { useSettings } from '../lib/hooks'
@@ -61,7 +62,11 @@ export function TodayScreen() {
         edit: () => open(<BowelForm initial={b} />),
       })
     for (const t of triggers.filter((x) => inDay(x.timestamp)))
-      out.push({ key: t.id, sort: t.timestamp, time: formatTime(t.timestamp), icon: dot('bg-orange-500'), title: t.tags.join(', '), detail: t.notes, edit: () => open(<TriggerForm initial={t} />) })
+      out.push(
+        t.meal !== undefined
+          ? { key: t.id, sort: t.timestamp, time: formatTime(t.timestamp), icon: dot('bg-amber-500'), title: `Meal · ${t.meal}`, detail: t.tags.join(', '), edit: () => open(<MealForm initial={t} />) }
+          : { key: t.id, sort: t.timestamp, time: formatTime(t.timestamp), icon: dot('bg-orange-500'), title: t.tags.join(', '), detail: t.notes, edit: () => open(<TriggerForm initial={t} />) },
+      )
     for (const d of doses.filter((x) => inDay(x.timestamp))) {
       const i = interventions.find((x) => x.id === d.interventionId)
       out.push({ key: d.id, sort: d.timestamp, time: formatTime(d.timestamp), icon: dot('bg-violet-500'), title: `Took ${i?.name ?? '(deleted)'}`, detail: [d.reason, d.notes].filter(Boolean).join(' · '), edit: () => open(<DoseForm initial={d} />) })
@@ -121,7 +126,7 @@ export function TodayScreen() {
                 <span className="w-16 shrink-0 whitespace-nowrap text-sm tabular-nums text-slate-500 dark:text-slate-400">{e.time}</span>
                 <span className="flex w-10 shrink-0 justify-center">{e.icon}</span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-medium">{e.title}</span>
+                  <span className="line-clamp-2 block font-medium">{e.title}</span>
                   {e.detail && <span className="block truncate text-sm text-slate-500 dark:text-slate-400">{e.detail}</span>}
                 </span>
                 <span className="text-slate-400" aria-hidden>

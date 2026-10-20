@@ -47,6 +47,8 @@ export interface DailyCheckIn extends BaseRecord {
 export interface TriggerEvent extends BaseRecord {
   timestamp: string
   tags: string[]
+  /** Set when logged through the Meal recorder: what was eaten, in the user's words. */
+  meal?: string
   notes?: string
 }
 
